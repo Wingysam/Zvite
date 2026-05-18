@@ -149,18 +149,32 @@ select {
 button {
 	border: 0;
 	padding: 0.7rem 0.85rem;
-	background: #4338ca;
+	background: #64748b;
 	color: #fff;
 	font-weight: 700;
 	cursor: pointer;
+	transition: background 0.15s ease, opacity 0.15s ease;
 }
 
 button.secondary {
 	background: #475569;
 }
 
-button.active {
+button.btn-going.active {
 	background: #16a34a;
+}
+
+button.btn-maybe.active {
+	background: #ca8a04;
+}
+
+button.btn-not-going.active {
+	background: #dc2626;
+}
+
+button.loading {
+	opacity: 0.5;
+	cursor: wait;
 }
 
 .button-row {
@@ -175,6 +189,34 @@ button.active {
 
 .inline-form button {
 	width: 100%;
+}
+
+.status-label {
+	font-size: 0.93rem;
+	font-weight: 600;
+	padding: 0.15rem 0.5rem;
+	border-radius: 6px;
+	margin-left: 0.4rem;
+}
+
+.status-label.going {
+	color: #16a34a;
+	background: #f0fdf4;
+}
+
+.status-label.maybe {
+	color: #ca8a04;
+	background: #fefce8;
+}
+
+.status-label.not-going {
+	color: #dc2626;
+	background: #fef2f2;
+}
+
+.status-label.no-response {
+	color: #94a3b8;
+	background: #f8fafc;
 }
 
 .error {

@@ -431,12 +431,12 @@ export function listInviteMembersByInviteId(inviteId: string): InviteMemberRecor
 	return sortInviteMembers(members);
 }
 
-export function addInviteMember(inviteId: string, name: string): InviteMemberRecord {
+export function addInviteMember(inviteId: string, name: string, status: InviteStatus = 'NoResponse'): InviteMemberRecord {
 	const member: InviteMemberRecord = {
 		id: createId(),
 		invite_id: inviteId,
 		name,
-		status: 'NoResponse'
+		status
 	};
 	insertInviteMemberStmt.run(member.id, member.invite_id, member.name, member.status);
 	return member;

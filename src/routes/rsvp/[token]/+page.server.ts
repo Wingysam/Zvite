@@ -80,7 +80,7 @@ export const actions: Actions = {
 			return fail(400, { error: 'Guest not found for this invitation.' });
 		}
 
-		return { success: true };
+		return { success: true, memberId, status };
 	},
 	addName: async ({ params, request }) => {
 		const invite = getInviteWithPartyByToken(params.token);
@@ -97,7 +97,7 @@ export const actions: Actions = {
 			return fail(400, { error: 'Name is required.' });
 		}
 
-		addInviteMember(invite.id, name);
-		return { success: true };
+		addInviteMember(invite.id, name, 'Yes');
+		return { success: true, name };
 	}
 };
