@@ -2,6 +2,23 @@
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form } = $props<{ data: PageData; form: ActionData }>();
+
+	function countStatus(members: { status: string }[], status: string): number {
+		return members.filter((m) => m.status === status).length;
+	}
+
+	function statusClass(status: string): string {
+		switch (status) {
+			case 'Yes':
+				return 'status-yes';
+			case 'Maybe':
+				return 'status-maybe';
+			case 'No':
+				return 'status-no';
+			default:
+				return 'status-pending';
+		}
+	}
 </script>
 
 <section class="card">
@@ -66,60 +83,94 @@
 	{#if data.invites.length === 0}
 		<p class="muted">No invites yet.</p>
 	{:else}
-		{#each data.invites as invite, index}
-			<article class="card">
-				<h3>Invite Link #{index + 1}</h3>
-				<p>
-					<strong>Share link:</strong>
-					<a href={invite.shareLink}>{invite.shareLink}</a>
-				</p>
-				<p class="muted">
-					Self-add names: {invite.allow_self_add_names ? 'Allowed' : 'Not allowed'}
-				</p>
-				<form method="POST" action="?/updateInvite">
-					<input type="hidden" name="inviteId" value={invite.id} />
-					<label class="checkline">
-						<input
-							type="checkbox"
-							name="allowSelfAddNames"
-							checked={Boolean(invite.allow_self_add_names)}
-							onchange={(event) => event.currentTarget.form?.requestSubmit()}
-						/>
-						Allow family to add their own names.
-					</label>
-				</form>
-				<form method="POST" action="?/removeInvite">
-					<input type="hidden" name="inviteId" value={invite.id} />
-					<button class="secondary" type="submit">Remove group</button>
-				</form>
-
-				<form method="POST" action="?/addMember">
-					<input type="hidden" name="inviteId" value={invite.id} />
-					<label>
-						Add guest name
-						<input name="name" required />
-					</label>
-					<button type="submit">Add guest</button>
-				</form>
-
-				{#if invite.members.length === 0}
-					<p class="muted">No names added for this invite.</p>
-				{:else}
-					{#each invite.members as member}
-						<article class="card">
-							<p>
-								<strong>{member.name}</strong>
-								<span class="muted">({member.status})</span>
-							</p>
-							<form class="inline-form" method="POST" action="?/removeMember">
-								<input type="hidden" name="inviteId" value={invite.id} />
-								<input type="hidden" name="memberId" value={member.id} />
-								<button class="secondary" type="submit">Remove</button>
-							</form>
-						</article>
+		<div class="invites-table-wrapper">
+			<table class="invites-table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Link</th>
+						<th>Guests</th>
+						<th>Responses</th>
+						<th>Self-add</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each data.invites as invite, index}
+						<tr>
+							<td class="num">{index + 1}</td>
+							<td class="link-cell">
+								<a href={invite.shareLink} title={invite.shareLink}>{invite.token}</a>
+							</td>
+							<td class="num">{invite.members.length}</td>
+							<td class="responses">
+								<span class="resp-yes">{countStatus(invite.members, 'Yes')}</span>
+								<span class="resp-maybe">{countStatus(invite.members, 'Maybe')}</span>
+								<span class="resp-no">{countStatus(invite.members, 'No')}</span>
+								<span class="resp-pending">{countStatus(invite.members, 'NoResponse')}</span>
+							</td>
+							<td>
+								<form method="POST" action="?/updateInvite" class="inline-form-check">
+									<input type="hidden" name="inviteId" value={invite.id} />
+									<label class="checkline">
+										<input
+											type="checkbox"
+											name="allowSelfAddNames"
+											checked={Boolean(invite.allow_self_add_names)}
+											onchange={(event) => event.currentTarget.form?.requestSubmit()}
+										/>
+									</label>
+								</form>
+							</td>
+							<td class="actions">
+								<form method="POST" action="?/removeInvite" class="inline-form">
+									<input type="hidden" name="inviteId" value={invite.id} />
+									<button class="btn-icon" type="submit" title="Remove invite">×</button>
+								</form>
+							</td>
+						</tr>
+						{#if invite.members.length > 0}
+							<tr class="members-row">
+								<td colspan="6">
+									<div class="members-list">
+										{#each invite.members as member}
+											<div class="member-item">
+												<span class="member-name">{member.name}</span>
+												<span class="status-badge {statusClass(member.status)}">{member.status}</span>
+												<form method="POST" action="?/removeMember" class="inline-form">
+													<input type="hidden" name="inviteId" value={invite.id} />
+													<input type="hidden" name="memberId" value={member.id} />
+													<button class="btn-icon" type="submit" title="Remove member">×</button>
+												</form>
+											</div>
+										{/each}
+									</div>
+								</td>
+							</tr>
+						{/if}
 					{/each}
-				{/if}
-			</article>
-		{/each}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="add-guest-section">
+			<form method="POST" action="?/addMember" class="compact-form">
+				<label>
+					Invite
+					<select name="inviteId" required>
+						{#each data.invites as invite}
+							<option value={invite.id} selected={invite.id === data.invites.at(-1)?.id}>
+								#{data.invites.indexOf(invite) + 1} ({invite.token})
+							</option>
+						{/each}
+					</select>
+				</label>
+				<label>
+					Guest name
+					<input name="name" required placeholder="Enter guest name..." />
+				</label>
+				<button type="submit">Add</button>
+			</form>
+		</div>
 	{/if}
 </section>

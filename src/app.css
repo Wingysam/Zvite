@@ -280,3 +280,198 @@ button.loading {
 		font-size: 1.6rem;
 	}
 }
+
+.invites-table-wrapper {
+	overflow-x: auto;
+}
+
+.invites-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.85rem;
+}
+
+.invites-table thead th {
+	text-align: left;
+	padding: 0.4rem 0.5rem;
+	border-bottom: 2px solid #e2e8f0;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #64748b;
+}
+
+.invites-table tbody tr {
+	border-bottom: 1px solid #f1f5f9;
+}
+
+.invites-table tbody tr:hover {
+	background: #f8fafc;
+}
+
+.invites-table td {
+	padding: 0.4rem 0.5rem;
+	vertical-align: middle;
+}
+
+.invites-table .num {
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+}
+
+.invites-table .link-cell {
+	max-width: 180px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.invites-table .link-cell a {
+	font-family: 'SF Mono', 'Fira Code', monospace;
+	font-size: 0.8rem;
+}
+
+.responses {
+	display: flex;
+	gap: 0.3rem;
+}
+
+.responses span {
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding: 0.1rem 0.35rem;
+	border-radius: 4px;
+	min-width: 1.5rem;
+	text-align: center;
+}
+
+.resp-yes {
+	color: #16a34a;
+	background: #f0fdf4;
+}
+
+.resp-maybe {
+	color: #ca8a04;
+	background: #fefce8;
+}
+
+.resp-no {
+	color: #dc2626;
+	background: #fef2f2;
+}
+
+.resp-pending {
+	color: #94a3b8;
+	background: #f8fafc;
+}
+
+.inline-form-check {
+	margin: 0;
+	gap: 0;
+}
+
+.inline-form-check label {
+	gap: 0;
+}
+
+.btn-icon {
+	padding: 0.2rem 0.45rem;
+	font-size: 1.1rem;
+	line-height: 1;
+	background: transparent;
+	color: #94a3b8;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.btn-icon:hover {
+	background: #fef2f2;
+	color: #dc2626;
+	border-color: #fecaca;
+}
+
+.members-row {
+	background: #fafbfc;
+}
+
+.members-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	padding: 0.35rem 0;
+}
+
+.member-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	padding: 0.2rem 0.4rem;
+	font-size: 0.8rem;
+}
+
+.member-name {
+	font-weight: 500;
+}
+
+.status-badge {
+	font-size: 0.7rem;
+	font-weight: 600;
+	padding: 0.1rem 0.3rem;
+	border-radius: 4px;
+}
+
+.status-yes {
+	color: #16a34a;
+	background: #f0fdf4;
+}
+
+.status-maybe {
+	color: #ca8a04;
+	background: #fefce8;
+}
+
+.status-no {
+	color: #dc2626;
+	background: #fef2f2;
+}
+
+.status-pending {
+	color: #94a3b8;
+	background: #f8fafc;
+}
+
+.add-guest-section {
+	margin-top: 0.75rem;
+	padding-top: 0.75rem;
+	border-top: 1px solid #e2e8f0;
+}
+
+.compact-form {
+	display: flex;
+	gap: 0.5rem;
+	align-items: flex-end;
+}
+
+.compact-form label {
+	flex: 1;
+	gap: 0.25rem;
+}
+
+.compact-form input,
+.compact-form select {
+	padding: 0.4rem 0.5rem;
+	font-size: 0.85rem;
+}
+
+.compact-form button {
+	padding: 0.4rem 0.85rem;
+	font-size: 0.85rem;
+	white-space: nowrap;
+}
+
+.actions {
+	width: 1%;
+}
