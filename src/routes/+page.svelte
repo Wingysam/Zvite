@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<section class="card">
+	<h1>Minimal RSVP Manager</h1>
+	<p>Create events, share a magic RSVP link, and track responses in one place.</p>
+	<p>
+		<a href="/dashboard">Go to dashboard</a>
+		<span class="muted">or</span>
+		<a href="/register">create an account</a>.
+	</p>
+</section>
