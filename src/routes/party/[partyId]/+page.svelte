@@ -1,8 +1,27 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 
 	let { data, form } = $props<{ data: PageData; form: ActionData }>();
+
+	let allowSelfAddNames = $state(false);
+
+	$effect(() => {
+		allowSelfAddNames = Boolean(data.defaultAllowSelfAddNames);
+	});
+
+	$effect(() => {
+		if (form?.allowSelfAddNames !== undefined) {
+			allowSelfAddNames = Boolean(form.allowSelfAddNames);
+		}
+	});
+
+	const preserveCreateInviteCheckboxState: SubmitFunction = () => {
+		return async ({ update }) => {
+			await update({ reset: false });
+		};
+	};
 
 	function countStatus(members: { status: string }[], status: string): number {
 		return members.filter((m) => m.status === status).length;
@@ -63,24 +82,6 @@
 		Yes: {data.counts.Yes} | Maybe: {data.counts.Maybe} | No: {data.counts.No} | No response:
 		{data.counts.NoResponse}
 	</p>
-</section>
-
-<section class="card">
-	<h2>Create family invite link</h2>
-	{#if form?.error}
-		<p class="error">{form.error}</p>
-	{/if}
-	<form method="POST" action="?/addInvite" use:enhance>
-		<label class="checkline">
-			<input
-				type="checkbox"
-				name="allowSelfAddNames"
-				checked={Boolean(data.defaultAllowSelfAddNames)}
-			/>
-			Allow this family to add their own names on the RSVP page.
-		</label>
-		<button type="submit">Create invite</button>
-	</form>
 </section>
 
 <section class="card">
@@ -178,4 +179,22 @@
 			</form>
 		</div>
 	{/if}
+
+	<div class="create-invite-section">
+		{#if form?.error}
+			<p class="error">{form.error}</p>
+		{/if}
+		<form method="POST" action="?/addInvite" use:enhance={preserveCreateInviteCheckboxState}>
+			<label class="checkline">
+				<input
+					type="checkbox"
+					name="allowSelfAddNames"
+					value="on"
+					bind:checked={allowSelfAddNames}
+				/>
+				Allow this family to add their own names on the RSVP page.
+			</label>
+			<button type="submit">Create invite</button>
+		</form>
+	</div>
 </section>

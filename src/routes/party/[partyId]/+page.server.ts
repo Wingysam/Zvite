@@ -120,7 +120,7 @@ export const actions: Actions = {
 			allowSelfAddNames
 		});
 
-		return { success: true };
+		return { success: true, allowSelfAddNames };
 	},
 	updateInvite: async ({ locals, params, request }) => {
 		if (!locals.user) {
