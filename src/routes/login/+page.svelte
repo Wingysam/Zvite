@@ -1,13 +1,16 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
+	import type { PageData } from './$types';
 
-	let { form } = $props<{ form: ActionData }>();
+	let { data, form } = $props<{ data: PageData; form: any }>();
 </script>
 
 <section class="card">
 	<h1>Login</h1>
 	{#if form?.error}
 		<p class="error">{form.error}</p>
+	{/if}
+	{#if data.signupsDisabled}
+		<p class="muted">Sign-ups are currently disabled.</p>
 	{/if}
 	<form method="POST">
 		<label>

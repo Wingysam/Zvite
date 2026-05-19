@@ -71,6 +71,12 @@ src/
 └── hooks.server.ts            # Auth guard, session loader
 ```
 
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DISABLE_SIGNUPS` | `false` | Set to `true` to hide the Register link and block sign-ups. The existing login page will show a notice. |
+
 ## Database
 
 The SQLite database (`app.db`) is created automatically on first startup. Schema tables:

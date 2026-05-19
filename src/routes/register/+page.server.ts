@@ -1,11 +1,26 @@
 import { createSessionValue, SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS } from '$lib/server/session';
 import { hashPassword } from '$lib/server/auth';
 import { createUser, getUserByEmail } from '$lib/server/queries';
-import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { error, fail, redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
+
+const DISABLE_SIGNUPS = import.meta.env.DISABLE_SIGNUPS === 'true' ||
+	(typeof process !== 'undefined' && process.env.DISABLE_SIGNUPS === 'true');
+
+export const load: PageServerLoad = () => {
+	if (DISABLE_SIGNUPS) {
+		throw error(403, 'Sign-ups are disabled.');
+	}
+
+	return {};
+};
 
 export const actions: Actions = {
 	default: async ({ cookies, request }) => {
+		if (DISABLE_SIGNUPS) {
+			throw error(403, 'Sign-ups are disabled.');
+		}
+
 		const data = Object.fromEntries(await request.formData());
 		const email = String(data.email ?? '').trim().toLowerCase();
 		const password = String(data.password ?? '');

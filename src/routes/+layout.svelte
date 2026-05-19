@@ -26,7 +26,9 @@
                         </form>
                     {:else}
                         <a href="/login">Login</a>
-                        <a href="/register">Register</a>
+                        {#if !data.signupsDisabled}
+                            <a href="/register">Register</a>
+                        {/if}
                     {/if}
                 </div>
             </nav>
