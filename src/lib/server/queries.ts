@@ -45,6 +45,7 @@ const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
 const insertUserStmt = db.prepare('INSERT INTO users (id, email, password_hash) VALUES (?, ?, ?)');
 const getUserByEmailStmt = db.prepare('SELECT id, email, password_hash FROM users WHERE email = ?');
 const getUserByIdStmt = db.prepare('SELECT id, email, password_hash FROM users WHERE id = ?');
+const updateUserPasswordStmt = db.prepare('UPDATE users SET password_hash = ? WHERE id = ?');
 
 const listOrganizationsForUserStmt = db.prepare(`
 	SELECT o.id, o.name
@@ -483,4 +484,9 @@ export function updateInviteMemberStatusById(
 
 export function getInviteWithPartyByToken(token: string): PartyInviteRecord | null {
 	return (getInviteWithPartyByTokenStmt.get(token) as PartyInviteRecord | null) ?? null;
+}
+
+export function updateUserPassword(userId: string, passwordHash: string): boolean {
+	const result = updateUserPasswordStmt.run(passwordHash, userId);
+	return result.changes > 0;
 }
