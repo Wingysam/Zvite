@@ -21,9 +21,7 @@
                 <div class="nav-links">
                     {#if data.user}
                         <a href="/dashboard">Dashboard</a>
-                        <form method="POST" action="/logout">
-                            <button type="submit">Log out</button>
-                        </form>
+                        <a href="/logout">Log out</a>
                     {:else}
                         <a href="/login">Login</a>
                         {#if !data.signupsDisabled}
