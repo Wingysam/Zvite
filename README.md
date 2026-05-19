@@ -2,6 +2,12 @@
 
 A minimal event RSVP manager built with SvelteKit and SQLite. Create events, share invite links, and track guest responses in one place.
 
+![Dashboard](screenshots/dashboard.png)
+
+![Party control page](screenshots/party.png)
+
+![RSVP page](screenshots/rsvp.png)
+
 ## AI
 
 I consider myself an "agentic engineer". For tasks that are "easier described than done", I use agents to build my software. This project is closer to a quick afternoon hack than a production-ready application.
