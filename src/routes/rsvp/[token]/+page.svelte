@@ -59,6 +59,7 @@
 
 <svelte:head>
 	<title>{data.invite.party_name}</title>
+	<meta property="og:title" content={data.invite.party_name} />
 </svelte:head>
 
 <div class="rsvp-page">

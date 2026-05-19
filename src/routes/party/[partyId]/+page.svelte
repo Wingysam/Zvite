@@ -22,6 +22,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{data.party.name}</title>
+</svelte:head>
+
 <section class="card">
 	<h1>{data.party.name}</h1>
 	{#if data.party.description}
