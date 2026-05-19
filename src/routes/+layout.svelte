@@ -8,14 +8,14 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>RSVP Manager</title>
+	<title>Zvite</title>
 </svelte:head>
 
 <div class="app">
 	{#if data.showChrome}
 		<header class="topbar">
 			<nav class="nav">
-				<a class="brand" href="/">RSVP</a>
+				<a class="brand" href="/">Zvite</a>
 				<div class="nav-links">
 					{#if data.user}
 						<a href="/dashboard">Dashboard</a>

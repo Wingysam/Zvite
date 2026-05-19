@@ -57,6 +57,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{data.invite.party_name}</title>
+</svelte:head>
+
 <div class="rsvp-page">
 	<section class="card">
 		<h1>{data.invite.party_name}</h1>
