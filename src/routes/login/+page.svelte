@@ -4,6 +4,10 @@
 	let { data, form } = $props<{ data: PageData; form: any }>();
 </script>
 
+<svelte:head>
+	<title>Login - Zvite</title>
+</svelte:head>
+
 <section class="card">
 	<h1>Login</h1>
 	{#if form?.error}

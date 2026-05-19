@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>Zvite</title>
+</svelte:head>
+
 <section class="card">
 	<h1>Zvite</h1>
 	<p>Create events, share links, and track responses in one place.</p>

@@ -4,6 +4,10 @@
 	let { form } = $props<{ form: ActionData }>();
 </script>
 
+<svelte:head>
+	<title>Create account - Zvite</title>
+</svelte:head>
+
 <section class="card">
 	<h1>Create account</h1>
 	{#if form?.error}

@@ -5,6 +5,10 @@
 	let { data, form } = $props<{ data: PageData; form: { error?: string; success?: boolean; message?: string } }>();
 </script>
 
+<svelte:head>
+	<title>Dashboard - Zvite</title>
+</svelte:head>
+
 <section class="card">
 	<h1>Your parties</h1>
 	<p><a href="/dashboard/new">Create new party</a></p>
