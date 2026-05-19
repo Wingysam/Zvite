@@ -76,6 +76,18 @@ src/
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DISABLE_SIGNUPS` | `false` | Set to `true` to hide the Register link and block sign-ups. The existing login page will show a notice. |
+| `DB_PATH` | `app.db` | Path to the SQLite database file. In Docker, defaults to `/data/app.db`. |
+| `PORT` | `3000` | Port the server listens on. |
+| `HOST` | `0.0.0.0` | Host to bind to. |
+
+## Docker
+
+```sh
+docker build -t zvite .
+docker run -d -p 3000:3000 -v zvite-data:/data zvite
+```
+
+Persistent data is stored in the `/data` volume (`/data/app.db`).
 
 ## Database
 

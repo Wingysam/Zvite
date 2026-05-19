@@ -1,0 +1,7 @@
+node_modules
+.svelte-kit
+output
+app.db
+*.db
+.git
+.vscode

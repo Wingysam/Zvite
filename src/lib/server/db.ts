@@ -1,6 +1,7 @@
 import { Database } from 'bun:sqlite';
 
-const db = new Database('app.db');
+const dbPath = process.env.DB_PATH ?? 'app.db';
+const db = new Database(dbPath);
 
 db.run('PRAGMA foreign_keys = ON;');
 
