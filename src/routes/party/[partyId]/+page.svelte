@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
+	import { enhance } from '$app/forms';
 
 	let { data, form } = $props<{ data: PageData; form: ActionData }>();
 
@@ -32,7 +33,7 @@
 
 <section class="card">
 	<h2>Event name</h2>
-	<form method="POST" action="?/updateName">
+	<form method="POST" action="?/updateName" use:enhance>
 		<label>
 			Name
 			<input name="name" required value={data.party.name} />
@@ -43,7 +44,7 @@
 
 <section class="card">
 	<h2>Event description</h2>
-	<form method="POST" action="?/updateDescription">
+	<form method="POST" action="?/updateDescription" use:enhance>
 		<label>
 			Description (Markdown + safe HTML/CSS)
 			<textarea name="description" rows="7">{data.party.description ?? ''}</textarea>
@@ -65,7 +66,7 @@
 	{#if form?.error}
 		<p class="error">{form.error}</p>
 	{/if}
-	<form method="POST" action="?/addInvite">
+	<form method="POST" action="?/addInvite" use:enhance>
 		<label class="checkline">
 			<input
 				type="checkbox"
@@ -110,7 +111,7 @@
 								<span class="resp-pending">{countStatus(invite.members, 'NoResponse')}</span>
 							</td>
 							<td>
-								<form method="POST" action="?/updateInvite" class="inline-form-check">
+								<form method="POST" action="?/updateInvite" class="inline-form-check" use:enhance>
 									<input type="hidden" name="inviteId" value={invite.id} />
 									<label class="checkline">
 										<input
@@ -123,7 +124,7 @@
 								</form>
 							</td>
 							<td class="actions">
-								<form method="POST" action="?/removeInvite" class="inline-form">
+								<form method="POST" action="?/removeInvite" class="inline-form" use:enhance>
 									<input type="hidden" name="inviteId" value={invite.id} />
 									<button class="btn-icon" type="submit" title="Remove invite">×</button>
 								</form>
@@ -137,7 +138,7 @@
 											<div class="member-item">
 												<span class="member-name">{member.name}</span>
 												<span class="status-badge {statusClass(member.status)}">{member.status}</span>
-												<form method="POST" action="?/removeMember" class="inline-form">
+												<form method="POST" action="?/removeMember" class="inline-form" use:enhance>
 													<input type="hidden" name="inviteId" value={invite.id} />
 													<input type="hidden" name="memberId" value={member.id} />
 													<button class="btn-icon" type="submit" title="Remove member">×</button>
@@ -154,7 +155,7 @@
 		</div>
 
 		<div class="add-guest-section">
-			<form method="POST" action="?/addMember" class="compact-form">
+			<form method="POST" action="?/addMember" class="compact-form" use:enhance>
 				<label>
 					Invite
 					<select name="inviteId" required>
