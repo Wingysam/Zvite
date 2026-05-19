@@ -114,13 +114,18 @@ export const actions: Actions = {
 		const data = Object.fromEntries(await request.formData());
 		const allowSelfAddNames = data.allowSelfAddNames === 'on';
 
-		createInviteForOwnedParty({
+		const invite = createInviteForOwnedParty({
 			partyId: party.id,
 			userId: locals.user.id,
 			allowSelfAddNames
 		});
 
-		return { success: true, allowSelfAddNames };
+		const name = String(data.name ?? '').trim();
+		if (name) {
+			addInviteMember(invite.id, name);
+		}
+
+		return { success: true, allowSelfAddNames, guestNameAdded: name || undefined };
 	},
 	updateInvite: async ({ locals, params, request }) => {
 		if (!locals.user) {

@@ -17,9 +17,30 @@
 		}
 	});
 
-	const preserveCreateInviteCheckboxState: SubmitFunction = () => {
+	const focusGuestName: SubmitFunction = () => {
 		return async ({ update }) => {
 			await update({ reset: false });
+			const nameInput = document.querySelector('.add-guest-section input[name="name"]') as HTMLInputElement;
+			if (nameInput) {
+				nameInput.value = '';
+				nameInput.focus();
+			}
+		};
+	};
+
+	const preserveCreateInviteCheckboxState: SubmitFunction = ({ formData }) => {
+		const guestNameInput = document.querySelector('.add-guest-section input[name="name"]') as HTMLInputElement;
+		if (guestNameInput?.value) {
+			formData.set('name', guestNameInput.value);
+			guestNameInput.value = '';
+		}
+
+		return async ({ update }) => {
+			await update({ reset: false });
+			const nameInput = document.querySelector('.add-guest-section input[name="name"]') as HTMLInputElement;
+			if (nameInput) {
+				nameInput.focus();
+			}
 		};
 	};
 
@@ -160,7 +181,7 @@
 		</div>
 
 		<div class="add-guest-section">
-			<form method="POST" action="?/addMember" class="compact-form" use:enhance>
+			<form method="POST" action="?/addMember" class="compact-form" use:enhance={focusGuestName}>
 				<label>
 					Invite
 					<select name="inviteId" required>
@@ -173,7 +194,20 @@
 				</label>
 				<label>
 					Guest name
-					<input name="name" required placeholder="Enter guest name..." />
+					<input
+						name="name"
+						required
+						placeholder="Enter guest name..."
+						onkeydown={(e) => {
+							if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+								e.preventDefault();
+								const createForm = document.querySelector('.create-invite-section form') as HTMLFormElement;
+								if (createForm) {
+									createForm.requestSubmit();
+								}
+							}
+						}}
+					/>
 				</label>
 				<button type="submit">Add</button>
 			</form>
@@ -184,8 +218,8 @@
 		{#if form?.error}
 			<p class="error">{form.error}</p>
 		{/if}
-		<form method="POST" action="?/addInvite" use:enhance={preserveCreateInviteCheckboxState}>
-			<label class="checkline">
+	<form method="POST" action="?/addInvite" use:enhance={preserveCreateInviteCheckboxState}>
+		<label class="checkline">
 				<input
 					type="checkbox"
 					name="allowSelfAddNames"

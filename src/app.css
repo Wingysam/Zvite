@@ -481,3 +481,13 @@ button.loading {
 	padding-top: 0.75rem;
 	border-top: 1px solid #e2e8f0;
 }
+
+.create-invite-form {
+	display: grid;
+	gap: 0.6rem;
+}
+
+.create-invite-fields {
+	display: grid;
+	gap: 0.4rem;
+}
