@@ -66,7 +66,8 @@ test('register, create party, invite guests, and RSVP', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: partyName })).toBeVisible();
 
 	const createInviteButton = page.getByRole('button', { name: 'Create invite' });
-	for (let i = 0; i < inviteGroups.length - 1; i += 1) {
+	const additionalInviteCount = inviteGroups.length - 1;
+	for (let inviteGroupIndex = 0; inviteGroupIndex < additionalInviteCount; inviteGroupIndex += 1) {
 		await createInviteButton.click();
 	}
 

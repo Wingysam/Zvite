@@ -17,13 +17,13 @@ export default defineConfig({
 		viewport: { width: 1440, height: 900 }
 	},
 	webServer: {
-		command: `node -e "require('node:fs').rmSync('${dbPath}', { force: true });" && bun run dev -- --host 127.0.0.1 --port 4173`,
+		command: `node ./tests/e2e/cleanup-db.mjs "${dbPath}" && bun run dev -- --host 127.0.0.1 --port 4173`,
 		env: {
 			...process.env,
 			DB_PATH: dbPath
 		},
 		url: 'http://127.0.0.1:4173',
-		reuseExistingServer: !process.env.CI,
+		reuseExistingServer: false,
 		timeout: 120_000
 	},
 	projects: [
