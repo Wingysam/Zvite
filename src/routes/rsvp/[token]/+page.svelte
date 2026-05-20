@@ -13,7 +13,7 @@
         Yes: { label: "Going", color: "going" },
         Maybe: { label: "Maybe", color: "maybe" },
         No: { label: "Not going", color: "not-going" },
-        NoResponse: { label: "No response", color: "no-response" },
+        NoResponse: { label: "Pending", color: "no-response" },
     };
 
     let pendingMemberId: string | null = $state(null);
