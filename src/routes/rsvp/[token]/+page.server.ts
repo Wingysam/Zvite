@@ -97,8 +97,7 @@ export const actions: Actions = {
 			return fail(400, { error: 'Name is required.' });
 		}
 
-		const member = addInviteMember(invite.id, name);
-		updateInviteMemberStatusById(invite.id, member.id, 'Yes');
+		addInviteMember(invite.id, name, 'Yes');
 		return { success: true, name };
 	}
 };

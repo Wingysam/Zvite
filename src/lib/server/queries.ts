@@ -477,7 +477,7 @@ export function addInviteMember(inviteId: string, name: string, status: InviteSt
 		invite_id: inviteId,
 		name,
 		status,
-		responded_at: null
+		responded_at: status === 'NoResponse' ? null : Math.floor(Date.now() / 1000)
 	};
 	insertInviteMemberStmt.run(member.id, member.invite_id, member.name, member.status, member.responded_at);
 	return member;

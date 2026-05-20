@@ -125,7 +125,12 @@
 				<li>
 					<strong>{response.member_name}</strong> responded <strong>{response.status}</strong> at
 					{formatRespondedAt(response.responded_at)} (
-					<a href={`/rsvp/${response.invite_token}`}>{response.invite_token}</a>)
+					<a
+						href={`/rsvp/${response.invite_token}`}
+						aria-label={`View RSVP details for ${response.member_name}`}
+					>
+						{response.invite_token}
+					</a>)
 				</li>
 			{/each}
 		</ul>
