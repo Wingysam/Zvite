@@ -40,10 +40,10 @@ async function updateReadmeScreenshot(page: Page, filename: string): Promise<voi
 }
 
 test('register, create party, invite guests, and RSVP', async ({ page }) => {
-	const runId = Date.now();
-	const email = `e2e-user-${runId}@example.com`;
+	const testRunTimestamp = Date.now();
+	const email = `e2e-user-${testRunTimestamp}@example.com`;
 	const password = 'password1234';
-	const partyName = `E2E Party ${runId}`;
+	const partyName = `E2E Party ${testRunTimestamp}`;
 
 	await page.goto('/');
 	await page.getByRole('link', { name: /create an account/i }).click();
