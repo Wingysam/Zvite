@@ -95,7 +95,7 @@ test('register, create party, invite guests, and RSVP', async ({ page }) => {
 		const memberCard = page.locator('article.card').filter({
 			has: page.locator('p strong', { hasText: name })
 		});
-		const responseButton = memberCard.getByRole('button', { name: response });
+		const responseButton = memberCard.getByRole('button', { name: new RegExp(`^${response}$`) });
 		await responseButton.click();
 		await expect(responseButton).toHaveClass(/active/);
 	}
