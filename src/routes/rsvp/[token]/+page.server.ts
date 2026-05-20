@@ -1,5 +1,5 @@
 import {
-	addInviteMember,
+	addRespondedInviteMember,
 	getInviteWithPartyByToken,
 	getInviteMemberSortKey,
 	listInvitesByPartyId,
@@ -97,7 +97,7 @@ export const actions: Actions = {
 			return fail(400, { error: 'Name is required.' });
 		}
 
-		addInviteMember(invite.id, name, 'Yes');
+		addRespondedInviteMember(invite.id, name, 'Yes');
 		return { success: true, name };
 	}
 };
