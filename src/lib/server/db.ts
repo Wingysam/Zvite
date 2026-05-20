@@ -65,6 +65,7 @@ db.run(`
     invite_id TEXT NOT NULL,
     name TEXT NOT NULL,
     status TEXT CHECK(status IN ('Yes', 'Maybe', 'No', 'NoResponse')) DEFAULT 'NoResponse',
+    responded_at INTEGER,
     FOREIGN KEY (invite_id) REFERENCES invites(id) ON DELETE CASCADE
   );
 `);
@@ -84,6 +85,10 @@ if (!hasColumn('invites', 'name')) {
 
 if (!hasColumn('invites', 'allow_self_add_names')) {
 	db.run('ALTER TABLE invites ADD COLUMN allow_self_add_names INTEGER NOT NULL DEFAULT 0;');
+}
+
+if (!hasColumn('invite_members', 'responded_at')) {
+	db.run('ALTER TABLE invite_members ADD COLUMN responded_at INTEGER;');
 }
 
 export default db;

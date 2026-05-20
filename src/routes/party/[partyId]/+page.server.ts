@@ -6,6 +6,7 @@ import {
 	getOwnedPartyById,
 	listInviteMembersByInviteId,
 	listInvitesForOwnedParty,
+	listRecentResponsesForOwnedParty,
 	removeOwnedInvite,
 	removeInviteMember,
 	updateOwnedPartyName,
@@ -44,12 +45,14 @@ export const load: PageServerLoad = ({ locals, params, url }) => {
 		No: allMembers.filter((member) => member.status === 'No').length,
 		NoResponse: allMembers.filter((member) => member.status === 'NoResponse').length
 	};
+	const recentResponses = listRecentResponsesForOwnedParty(party.id, locals.user.id);
 
 	return {
 		party,
 		renderedDescription: renderMarkdownSafe(party.description),
 		invites: invitesWithMembers,
 		counts,
+		recentResponses,
 		defaultAllowSelfAddNames: mostRecentInvite?.allow_self_add_names === 1
 	};
 };

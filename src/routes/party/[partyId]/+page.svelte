@@ -60,6 +60,10 @@
 				return 'status-pending';
 		}
 	}
+
+	function formatRespondedAt(timestamp: number): string {
+		return new Date(timestamp * 1000).toLocaleString();
+	}
 </script>
 
 <svelte:head>
@@ -103,6 +107,23 @@
 		Yes: {data.counts.Yes} | Maybe: {data.counts.Maybe} | No: {data.counts.No} | No response:
 		{data.counts.NoResponse}
 	</p>
+</section>
+
+<section class="card">
+	<h2>Recent responses</h2>
+	{#if data.recentResponses.length === 0}
+		<p class="muted">No responses yet.</p>
+	{:else}
+		<ul>
+			{#each data.recentResponses as response}
+				<li>
+					<strong>{response.member_name}</strong> responded <strong>{response.status}</strong> at
+					{formatRespondedAt(response.responded_at)} (
+					<a href={`/rsvp/${response.invite_token}`}>{response.invite_token}</a>)
+				</li>
+			{/each}
+		</ul>
+	{/if}
 </section>
 
 <section class="card">
