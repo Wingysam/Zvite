@@ -70,6 +70,19 @@
 			minute: '2-digit'
 		}).format(new Date(timestamp * 1000));
 	}
+
+	function formatResponseStatus(status: string): string {
+		switch (status) {
+			case 'Yes':
+				return 'Attending';
+			case 'Maybe':
+				return 'Maybe attending';
+			case 'No':
+				return 'Not attending';
+			default:
+				return status;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -123,7 +136,8 @@
 		<ul>
 			{#each data.recentResponses as response}
 				<li>
-					<strong>{response.member_name}</strong> responded <strong>{response.status}</strong> at
+					<strong>{response.member_name}</strong> responded
+					<strong>{formatResponseStatus(response.status)}</strong> at
 					{formatRespondedAt(response.responded_at)} (
 					<a
 						href={`/rsvp/${response.invite_token}`}

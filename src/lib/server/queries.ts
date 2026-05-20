@@ -200,7 +200,7 @@ const listRecentResponsesForOwnedPartyStmt = db.prepare(`
 	JOIN invites i ON i.id = im.invite_id
 	JOIN parties p ON p.id = i.party_id
 	WHERE p.id = ?
-	  AND im.status IN ('Yes', 'Maybe', 'No')
+	  AND im.status != 'NoResponse'
 	  AND im.responded_at IS NOT NULL
 	  AND EXISTS (
 	  	SELECT 1
