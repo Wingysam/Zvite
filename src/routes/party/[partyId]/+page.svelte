@@ -62,7 +62,13 @@
 	}
 
 	function formatRespondedAt(timestamp: number): string {
-		return new Date(timestamp * 1000).toLocaleString();
+		return new Intl.DateTimeFormat(undefined, {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit'
+		}).format(new Date(timestamp * 1000));
 	}
 </script>
 
