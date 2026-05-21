@@ -15,7 +15,7 @@ export default defineConfig({
 	use: {
 		baseURL: 'http://127.0.0.1:4173',
 		trace: 'on-first-retry',
-		viewport: { width: 1440, height: 900 }
+		viewport: { width: 2560, height: 1440 }
 	},
 	webServer: {
 		command: `node ./tests/e2e/cleanup-db.mjs "${dbPath}" && bun run dev -- --host 127.0.0.1 --port 4173`,
