@@ -155,13 +155,6 @@
 						{statusLabels[response.status].label}
 					</span>
 					<em class="muted">{formatTimeAgo(response.responded_at)}</em>
-					(
-					<a
-						href={`/rsvp/${response.invite_token}`}
-						aria-label={`View RSVP details for ${response.member_name}`}
-					>
-						{response.invite_token}
-					</a>)
 				</li>
 			{/each}
 		</ul>
