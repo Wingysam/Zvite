@@ -28,13 +28,13 @@ Many of my other projects are written with no AI to maintain and build on my own
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Framework | SvelteKit 2 (Svelte 5) |
-| Runtime | Bun |
-| Database | SQLite (`bun:sqlite`) |
-| Styling | Custom CSS |
-| Markdown | `marked` + `sanitize-html` |
+| Layer     | Technology                 |
+| --------- | -------------------------- |
+| Framework | SvelteKit 2 (Svelte 5)     |
+| Runtime   | Bun                        |
+| Database  | SQLite (`bun:sqlite`)      |
+| Styling   | Custom CSS                 |
+| Markdown  | `marked` + `sanitize-html` |
 
 ## Getting Started
 
@@ -47,14 +47,14 @@ Open [http://localhost:5173](http://localhost:5173).
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `bun dev` | Start the dev server |
-| `bun run build` | Production build |
-| `bun run preview` | Preview the production build |
-| `bun run check` | Run Svelte type-checking |
-| `bun run check:watch` | Type-check in watch mode |
-| `bun run e2e` | Run the Playwright end-to-end suite |
+| Command                          | Description                                  |
+| -------------------------------- | -------------------------------------------- |
+| `bun dev`                        | Start the dev server                         |
+| `bun run build`                  | Production build                             |
+| `bun run preview`                | Preview the production build                 |
+| `bun run check`                  | Run Svelte type-checking                     |
+| `bun run check:watch`            | Type-check in watch mode                     |
+| `bun run e2e`                    | Run the Playwright end-to-end suite          |
 | `bun run e2e:update-screenshots` | Run e2e tests and refresh README screenshots |
 
 ## Project Structure
@@ -81,12 +81,12 @@ src/
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DISABLE_SIGNUPS` | `false` | Set to `true` to hide the Register link and block sign-ups. The existing login page will show a notice. |
-| `DB_PATH` | `app.db` | Path to the SQLite database file. In Docker, defaults to `/data/app.db`. |
-| `PORT` | `3000` | Port the server listens on. |
-| `HOST` | `0.0.0.0` | Host to bind to. |
+| Variable          | Default   | Description                                                                                             |
+| ----------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| `DISABLE_SIGNUPS` | `false`   | Set to `true` to hide the Register link and block sign-ups. The existing login page will show a notice. |
+| `DB_PATH`         | `app.db`  | Path to the SQLite database file. In Docker, defaults to `/data/app.db`.                                |
+| `PORT`            | `3000`    | Port the server listens on.                                                                             |
+| `HOST`            | `0.0.0.0` | Host to bind to.                                                                                        |
 
 ## Docker
 

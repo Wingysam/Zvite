@@ -1,68 +1,74 @@
-import { Database } from 'bun:sqlite';
+import { Database } from "bun:sqlite";
 
-const dbPath = process.env.DB_PATH ?? 'app.db';
+const dbPath = process.env.DB_PATH ?? "app.db";
 const db = new Database(dbPath);
 
-db.run('PRAGMA foreign_keys = ON;');
+db.run("PRAGMA foreign_keys = ON;");
 
 type TableInfoRow = {
-	name: string;
+  name: string;
 };
 
 type Migration = {
-	toVersion: number;
-	up: () => void;
+  toVersion: number;
+  up: () => void;
 };
 
 type DatabaseVersionRow = {
-	database_version: number;
+  database_version: number;
 };
 
 function tableExists(tableName: string): boolean {
-	const row = db
-		.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ? LIMIT 1")
-		.get(tableName) as { name: string } | null;
-	return row !== null;
+  const row = db
+    .prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ? LIMIT 1",
+    )
+    .get(tableName) as { name: string } | null;
+  return row !== null;
 }
 
 function hasColumn(tableName: string, columnName: string): boolean {
-	const tableInfo = db.prepare(`PRAGMA table_info(${tableName})`).all() as TableInfoRow[];
-	return tableInfo.some((column) => column.name === columnName);
+  const tableInfo = db
+    .prepare(`PRAGMA table_info(${tableName})`)
+    .all() as TableInfoRow[];
+  return tableInfo.some((column) => column.name === columnName);
 }
 
 function ensureMetadataTable(): void {
-	db.run(`
+  db.run(`
 		CREATE TABLE IF NOT EXISTS metadata (
 			id INTEGER PRIMARY KEY CHECK(id = 1),
 			database_version INTEGER NOT NULL
 		);
 	`);
-	db.run('INSERT OR IGNORE INTO metadata (id, database_version) VALUES (1, 0);');
+  db.run(
+    "INSERT OR IGNORE INTO metadata (id, database_version) VALUES (1, 0);",
+  );
 }
 
 function getCurrentDatabaseVersion(): number {
-	if (!tableExists('metadata')) {
-		return 0;
-	}
-	ensureMetadataTable();
-	const row = db
-		.prepare('SELECT database_version FROM metadata WHERE id = 1 LIMIT 1')
-		.get() as DatabaseVersionRow | null;
-	return row?.database_version ?? 0;
+  if (!tableExists("metadata")) {
+    return 0;
+  }
+  ensureMetadataTable();
+  const row = db
+    .prepare("SELECT database_version FROM metadata WHERE id = 1 LIMIT 1")
+    .get() as DatabaseVersionRow | null;
+  return row?.database_version ?? 0;
 }
 
 function setCurrentDatabaseVersion(version: number): void {
-	ensureMetadataTable();
-	db.run('UPDATE metadata SET database_version = ? WHERE id = 1;', [version]);
+  ensureMetadataTable();
+  db.run("UPDATE metadata SET database_version = ? WHERE id = 1;", [version]);
 }
 
 const migrations: Migration[] = [
-	{
-		toVersion: 1,
-		up: () => {
-			ensureMetadataTable();
+  {
+    toVersion: 1,
+    up: () => {
+      ensureMetadataTable();
 
-			db.run(`
+      db.run(`
 				CREATE TABLE IF NOT EXISTS users (
 					id TEXT PRIMARY KEY,
 					email TEXT UNIQUE NOT NULL,
@@ -70,14 +76,14 @@ const migrations: Migration[] = [
 				);
 			`);
 
-			db.run(`
+      db.run(`
 				CREATE TABLE IF NOT EXISTS organizations (
 					id TEXT PRIMARY KEY,
 					name TEXT NOT NULL
 				);
 			`);
 
-			db.run(`
+      db.run(`
 				CREATE TABLE IF NOT EXISTS organization_members (
 					organization_id TEXT NOT NULL,
 					user_id TEXT NOT NULL,
@@ -87,7 +93,7 @@ const migrations: Migration[] = [
 				);
 			`);
 
-			db.run(`
+      db.run(`
 				CREATE TABLE IF NOT EXISTS parties (
 					id TEXT PRIMARY KEY,
 					name TEXT NOT NULL,
@@ -95,7 +101,7 @@ const migrations: Migration[] = [
 				);
 			`);
 
-			db.run(`
+      db.run(`
 				CREATE TABLE IF NOT EXISTS party_owners (
 					party_id TEXT NOT NULL,
 					owner_id TEXT NOT NULL,
@@ -105,7 +111,7 @@ const migrations: Migration[] = [
 				);
 			`);
 
-			db.run(`
+      db.run(`
 				CREATE TABLE IF NOT EXISTS invites (
 					id TEXT PRIMARY KEY,
 					party_id TEXT NOT NULL,
@@ -116,7 +122,7 @@ const migrations: Migration[] = [
 				);
 			`);
 
-			db.run(`
+      db.run(`
 				CREATE TABLE IF NOT EXISTS invite_members (
 					id TEXT PRIMARY KEY,
 					invite_id TEXT NOT NULL,
@@ -127,33 +133,39 @@ const migrations: Migration[] = [
 				);
 			`);
 
-			if (!hasColumn('invites', 'name')) {
-				db.run("ALTER TABLE invites ADD COLUMN name TEXT NOT NULL DEFAULT 'General Invite';");
-			}
+      if (!hasColumn("invites", "name")) {
+        db.run(
+          "ALTER TABLE invites ADD COLUMN name TEXT NOT NULL DEFAULT 'General Invite';",
+        );
+      }
 
-			if (!hasColumn('invites', 'allow_self_add_names')) {
-				db.run('ALTER TABLE invites ADD COLUMN allow_self_add_names INTEGER NOT NULL DEFAULT 0;');
-			}
+      if (!hasColumn("invites", "allow_self_add_names")) {
+        db.run(
+          "ALTER TABLE invites ADD COLUMN allow_self_add_names INTEGER NOT NULL DEFAULT 0;",
+        );
+      }
 
-			if (!hasColumn('invite_members', 'responded_at')) {
-				db.run('ALTER TABLE invite_members ADD COLUMN responded_at INTEGER;');
-			}
-		}
-	}
+      if (!hasColumn("invite_members", "responded_at")) {
+        db.run("ALTER TABLE invite_members ADD COLUMN responded_at INTEGER;");
+      }
+    },
+  },
 ];
 
 function runMigrations(): void {
-	let currentVersion = getCurrentDatabaseVersion();
-	const orderedMigrations = [...migrations].sort((a, b) => a.toVersion - b.toVersion);
+  let currentVersion = getCurrentDatabaseVersion();
+  const orderedMigrations = [...migrations].sort(
+    (a, b) => a.toVersion - b.toVersion,
+  );
 
-	for (const migration of orderedMigrations) {
-		if (migration.toVersion <= currentVersion) {
-			continue;
-		}
-		migration.up();
-		setCurrentDatabaseVersion(migration.toVersion);
-		currentVersion = migration.toVersion;
-	}
+  for (const migration of orderedMigrations) {
+    if (migration.toVersion <= currentVersion) {
+      continue;
+    }
+    migration.up();
+    setCurrentDatabaseVersion(migration.toVersion);
+    currentVersion = migration.toVersion;
+  }
 }
 
 runMigrations();
