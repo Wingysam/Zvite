@@ -15,7 +15,7 @@ export default defineConfig({
 	use: {
 		baseURL: 'http://127.0.0.1:4173',
 		trace: 'on-first-retry',
-		viewport: { width: 2560, height: 1440 }
+		viewport: { width: 3840, height: 2160 }
 	},
 	webServer: {
 		command: `node ./tests/e2e/cleanup-db.mjs "${dbPath}" && bun run dev -- --host 127.0.0.1 --port 4173`,
@@ -30,7 +30,11 @@ export default defineConfig({
 	projects: [
 		{
 			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] }
+			use: {
+				...devices['Desktop Chrome'],
+				viewport: { width: 1920, height: 1080 },
+				deviceScaleFactor: 2
+			}
 		}
 	]
 });
