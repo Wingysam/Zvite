@@ -222,6 +222,20 @@ button.loading {
     background: #f8fafc;
 }
 
+.recent-responses {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding-left: 1rem;
+    margin: 0;
+}
+
+.recent-responses li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .error {
     color: #b91c1c;
     font-weight: 600;

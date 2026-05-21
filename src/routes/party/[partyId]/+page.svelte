@@ -183,7 +183,7 @@
     {#if data.recentResponses.length === 0}
         <p class="muted">No responses yet.</p>
     {:else}
-        <ul>
+        <ul class="recent-responses">
             {#each data.recentResponses as response}
                 <li>
                     <strong>{response.member_name}</strong>
