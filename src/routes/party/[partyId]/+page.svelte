@@ -71,25 +71,26 @@
 	const relativeTimeFormat = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
 
 	function formatTimeAgo(timestamp: number): string {
-		const diffSeconds = Math.round(timestamp - Date.now() / 1000);
-		const absSeconds = Math.abs(diffSeconds);
+		const elapsedSeconds = Math.round(Date.now() / 1000 - timestamp);
+		const absSeconds = Math.abs(elapsedSeconds);
+		const pastOffset = -elapsedSeconds;
 
 		if (absSeconds >= 60 * 60 * 24 * 365) {
-			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60 * 24 * 365)), 'year');
+			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60 * 24 * 365)), 'year');
 		}
 		if (absSeconds >= 60 * 60 * 24 * 30) {
-			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60 * 24 * 30)), 'month');
+			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60 * 24 * 30)), 'month');
 		}
 		if (absSeconds >= 60 * 60 * 24) {
-			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60 * 24)), 'day');
+			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60 * 24)), 'day');
 		}
 		if (absSeconds >= 60 * 60) {
-			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60)), 'hour');
+			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60)), 'hour');
 		}
 		if (absSeconds >= 60) {
-			return relativeTimeFormat.format(Math.round(diffSeconds / 60), 'minute');
+			return relativeTimeFormat.format(Math.round(pastOffset / 60), 'minute');
 		}
-		return relativeTimeFormat.format(diffSeconds, 'second');
+		return relativeTimeFormat.format(pastOffset, 'second');
 	}
 </script>
 
