@@ -136,6 +136,37 @@ test("register, create party, invite guests, and RSVP", async ({ page }) => {
       /Yes:\s*2\s*\|\s*Maybe:\s*1\s*\|\s*No:\s*1\s*\|\s*No response:\s*6/,
     ),
   ).toBeVisible();
+
+  const recentResponses = page
+    .locator("section.card")
+    .filter({ has: page.getByRole("heading", { name: "Recent responses" }) });
+
+  await expect(
+    recentResponses
+      .locator("li")
+      .filter({ has: page.locator("strong", { hasText: "Casey" }) })
+      .locator(".status-label.going"),
+  ).toHaveText("Going");
+  await expect(
+    recentResponses
+      .locator("li")
+      .filter({ has: page.locator("strong", { hasText: "Drew" }) })
+      .locator(".status-label.not-going"),
+  ).toHaveText("Not going");
+  await expect(
+    recentResponses
+      .locator("li")
+      .filter({ has: page.locator("strong", { hasText: "Flynn" }) })
+      .locator(".status-label.maybe"),
+  ).toHaveText("Maybe");
+  await expect(
+    recentResponses
+      .locator("li")
+      .filter({ has: page.locator("strong", { hasText: "Jules" }) })
+      .locator(".status-label.going"),
+  ).toHaveText("Going");
+  await expect(recentResponses).toContainText(/ago/);
+
   await updateReadmeScreenshot(page, "party.png");
 
   await page.goto(inviteLinks[1]);
