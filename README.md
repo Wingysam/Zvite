@@ -54,6 +54,8 @@ Open [http://localhost:5173](http://localhost:5173).
 | `bun run preview` | Preview the production build |
 | `bun run check` | Run Svelte type-checking |
 | `bun run check:watch` | Type-check in watch mode |
+| `bun run e2e` | Run the Playwright end-to-end suite |
+| `bun run e2e:update-screenshots` | Run e2e tests and refresh README screenshots |
 
 ## Project Structure
 
