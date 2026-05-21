@@ -69,26 +69,31 @@
 	};
 
 	const relativeTimeFormatter = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
+	const SECONDS_PER_MINUTE = 60;
+	const SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE;
+	const SECONDS_PER_DAY = 24 * SECONDS_PER_HOUR;
+	const SECONDS_PER_MONTH = 30 * SECONDS_PER_DAY;
+	const SECONDS_PER_YEAR = 365 * SECONDS_PER_DAY;
 
 	function formatTimeAgo(timestamp: number): string {
 		const elapsedSeconds = Math.round(Date.now() / 1000 - timestamp);
 		const absSeconds = Math.abs(elapsedSeconds);
 		const pastOffset = -elapsedSeconds;
 
-		if (absSeconds >= 60 * 60 * 24 * 365) {
-			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60 * 24 * 365)), 'year');
+		if (absSeconds >= SECONDS_PER_YEAR) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_YEAR), 'year');
 		}
-		if (absSeconds >= 60 * 60 * 24 * 30) {
-			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60 * 24 * 30)), 'month');
+		if (absSeconds >= SECONDS_PER_MONTH) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_MONTH), 'month');
 		}
-		if (absSeconds >= 60 * 60 * 24) {
-			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60 * 24)), 'day');
+		if (absSeconds >= SECONDS_PER_DAY) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_DAY), 'day');
 		}
-		if (absSeconds >= 60 * 60) {
-			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60)), 'hour');
+		if (absSeconds >= SECONDS_PER_HOUR) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_HOUR), 'hour');
 		}
-		if (absSeconds >= 60) {
-			return relativeTimeFormatter.format(Math.round(pastOffset / 60), 'minute');
+		if (absSeconds >= SECONDS_PER_MINUTE) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_MINUTE), 'minute');
 		}
 		return relativeTimeFormatter.format(pastOffset, 'second');
 	}
