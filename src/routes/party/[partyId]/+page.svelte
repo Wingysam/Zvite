@@ -61,27 +61,35 @@
 		}
 	}
 
-	function formatRespondedAt(timestamp: number): string {
-		return new Intl.DateTimeFormat(undefined, {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: '2-digit'
-		}).format(new Date(timestamp * 1000));
-	}
+	const statusLabels: Record<string, { label: string; color: string }> = {
+		Yes: { label: 'Going', color: 'going' },
+		Maybe: { label: 'Maybe', color: 'maybe' },
+		No: { label: 'Not going', color: 'not-going' },
+		NoResponse: { label: 'Pending', color: 'no-response' }
+	};
 
-	function formatResponseStatus(status: string): string {
-		switch (status) {
-			case 'Yes':
-				return 'Attending';
-			case 'Maybe':
-				return 'Maybe attending';
-			case 'No':
-				return 'Not attending';
-			default:
-				return status;
+	const relativeTimeFormat = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
+
+	function formatTimeAgo(timestamp: number): string {
+		const diffSeconds = Math.round(timestamp - Date.now() / 1000);
+		const absSeconds = Math.abs(diffSeconds);
+
+		if (absSeconds >= 60 * 60 * 24 * 365) {
+			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60 * 24 * 365)), 'year');
 		}
+		if (absSeconds >= 60 * 60 * 24 * 30) {
+			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60 * 24 * 30)), 'month');
+		}
+		if (absSeconds >= 60 * 60 * 24) {
+			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60 * 24)), 'day');
+		}
+		if (absSeconds >= 60 * 60) {
+			return relativeTimeFormat.format(Math.round(diffSeconds / (60 * 60)), 'hour');
+		}
+		if (absSeconds >= 60) {
+			return relativeTimeFormat.format(Math.round(diffSeconds / 60), 'minute');
+		}
+		return relativeTimeFormat.format(diffSeconds, 'second');
 	}
 </script>
 
@@ -136,9 +144,12 @@
 		<ul>
 			{#each data.recentResponses as response}
 				<li>
-					<strong>{response.member_name}</strong> responded
-					<strong>{formatResponseStatus(response.status)}</strong> at
-					{formatRespondedAt(response.responded_at)} (
+					<strong>{response.member_name}</strong>
+					<span class="status-label {statusLabels[response.status].color}">
+						{statusLabels[response.status].label}
+					</span>
+					<em class="muted">{formatTimeAgo(response.responded_at)}</em>
+					(
 					<a
 						href={`/rsvp/${response.invite_token}`}
 						aria-label={`View RSVP details for ${response.member_name}`}
