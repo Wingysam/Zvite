@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { resolve } from 'node:path';
 
-const dbPath = process.env.E2E_DB_PATH ?? '/tmp/zvite-e2e.db';
+const dbPath = process.env.E2E_DB_PATH ?? resolve(process.cwd(), '.e2e', 'zvite-e2e.db');
 
 export default defineConfig({
 	testDir: './tests/e2e',
