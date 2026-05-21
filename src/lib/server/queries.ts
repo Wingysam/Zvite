@@ -38,6 +38,16 @@ export interface InviteMemberRecord {
 	invite_id: string;
 	name: string;
 	status: InviteStatus;
+	responded_at: number | null;
+}
+
+export interface RecentResponseRecord {
+	member_id: string;
+	member_name: string;
+	status: Exclude<InviteStatus, 'NoResponse'>;
+	responded_at: number;
+	invite_id: string;
+	invite_token: string;
 }
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -161,11 +171,11 @@ const insertInviteStmt = db.prepare(
 );
 
 const insertInviteMemberStmt = db.prepare(
-	'INSERT INTO invite_members (id, invite_id, name, status) VALUES (?, ?, ?, ?)'
+	'INSERT INTO invite_members (id, invite_id, name, status, responded_at) VALUES (?, ?, ?, ?, ?)'
 );
 const deleteInviteMemberStmt = db.prepare('DELETE FROM invite_members WHERE id = ? AND invite_id = ?');
 const updateInviteMemberStatusByIdStmt = db.prepare(
-	'UPDATE invite_members SET status = ? WHERE id = ? AND invite_id = ?'
+	'UPDATE invite_members SET status = ?, responded_at = unixepoch() WHERE id = ? AND invite_id = ?'
 );
 const updateInviteSelfAddNamesStmt = db.prepare(
 	'UPDATE invites SET allow_self_add_names = ? WHERE id = ?'
@@ -173,9 +183,38 @@ const updateInviteSelfAddNamesStmt = db.prepare(
 const deleteInviteStmt = db.prepare('DELETE FROM invites WHERE id = ?');
 
 const listInviteMembersByInviteIdStmt = db.prepare(`
-	SELECT id, invite_id, name, status
+	SELECT id, invite_id, name, status, responded_at
 	FROM invite_members
 	WHERE invite_id = ?
+`);
+
+const listRecentResponsesForOwnedPartyStmt = db.prepare(`
+	SELECT
+		im.id AS member_id,
+		im.name AS member_name,
+		im.status,
+		im.responded_at,
+		i.id AS invite_id,
+		i.token AS invite_token
+	FROM invite_members im
+	JOIN invites i ON i.id = im.invite_id
+	JOIN parties p ON p.id = i.party_id
+	WHERE p.id = ?
+	  AND im.status != 'NoResponse'
+	  AND im.responded_at IS NOT NULL
+	  AND EXISTS (
+	  	SELECT 1
+	  	FROM party_owners po
+	  	LEFT JOIN organization_members om
+	  		ON po.owner_type = 'Organization' AND po.owner_id = om.organization_id
+	  	WHERE po.party_id = p.id
+	  	  AND (
+	  	  	(po.owner_type = 'User' AND po.owner_id = ?)
+	  	  	OR (po.owner_type = 'Organization' AND om.user_id = ?)
+	  	  )
+	  )
+	ORDER BY im.responded_at DESC
+	LIMIT ?
 `);
 
 const getInviteWithPartyByTokenStmt = db.prepare(`
@@ -437,9 +476,26 @@ export function addInviteMember(inviteId: string, name: string, status: InviteSt
 		id: createId(),
 		invite_id: inviteId,
 		name,
-		status
+		status,
+		responded_at: null
 	};
-	insertInviteMemberStmt.run(member.id, member.invite_id, member.name, member.status);
+	insertInviteMemberStmt.run(member.id, member.invite_id, member.name, member.status, member.responded_at);
+	return member;
+}
+
+export function addRespondedInviteMember(
+	inviteId: string,
+	name: string,
+	status: Exclude<InviteStatus, 'NoResponse'>
+): InviteMemberRecord {
+	const member: InviteMemberRecord = {
+		id: createId(),
+		invite_id: inviteId,
+		name,
+		status,
+		responded_at: Math.floor(Date.now() / 1000)
+	};
+	insertInviteMemberStmt.run(member.id, member.invite_id, member.name, member.status, member.responded_at);
 	return member;
 }
 
@@ -480,6 +536,14 @@ export function updateInviteMemberStatusById(
 ): boolean {
 	const result = updateInviteMemberStatusByIdStmt.run(status, memberId, inviteId);
 	return result.changes > 0;
+}
+
+export function listRecentResponsesForOwnedParty(
+	partyId: string,
+	userId: string,
+	limit = 20
+): RecentResponseRecord[] {
+	return listRecentResponsesForOwnedPartyStmt.all(partyId, userId, userId, limit) as RecentResponseRecord[];
 }
 
 export function getInviteWithPartyByToken(token: string): PartyInviteRecord | null {

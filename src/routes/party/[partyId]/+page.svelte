@@ -60,6 +60,43 @@
 				return 'status-pending';
 		}
 	}
+
+	const statusLabels: Record<string, { label: string; color: string }> = {
+		Yes: { label: 'Going', color: 'going' },
+		Maybe: { label: 'Maybe', color: 'maybe' },
+		No: { label: 'Not going', color: 'not-going' },
+		NoResponse: { label: 'Pending', color: 'no-response' }
+	};
+
+	const relativeTimeFormatter = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
+	const SECONDS_PER_MINUTE = 60;
+	const SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE;
+	const SECONDS_PER_DAY = 24 * SECONDS_PER_HOUR;
+	const SECONDS_PER_MONTH = 30 * SECONDS_PER_DAY;
+	const SECONDS_PER_YEAR = 365 * SECONDS_PER_DAY;
+
+	function formatTimeAgo(timestamp: number): string {
+		const elapsedSeconds = Math.round(Date.now() / 1000 - timestamp);
+		const absSeconds = Math.abs(elapsedSeconds);
+		const pastOffset = -elapsedSeconds;
+
+		if (absSeconds >= SECONDS_PER_YEAR) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_YEAR), 'year');
+		}
+		if (absSeconds >= SECONDS_PER_MONTH) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_MONTH), 'month');
+		}
+		if (absSeconds >= SECONDS_PER_DAY) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_DAY), 'day');
+		}
+		if (absSeconds >= SECONDS_PER_HOUR) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_HOUR), 'hour');
+		}
+		if (absSeconds >= SECONDS_PER_MINUTE) {
+			return relativeTimeFormatter.format(Math.round(pastOffset / SECONDS_PER_MINUTE), 'minute');
+		}
+		return relativeTimeFormatter.format(pastOffset, 'second');
+	}
 </script>
 
 <svelte:head>
@@ -103,6 +140,25 @@
 		Yes: {data.counts.Yes} | Maybe: {data.counts.Maybe} | No: {data.counts.No} | No response:
 		{data.counts.NoResponse}
 	</p>
+</section>
+
+<section class="card">
+	<h2>Recent responses</h2>
+	{#if data.recentResponses.length === 0}
+		<p class="muted">No responses yet.</p>
+	{:else}
+		<ul>
+			{#each data.recentResponses as response}
+				<li>
+					<strong>{response.member_name}</strong>
+					<span class="status-label {statusLabels[response.status].color}">
+						{statusLabels[response.status].label}
+					</span>
+					<em class="muted">{formatTimeAgo(response.responded_at)}</em>
+				</li>
+			{/each}
+		</ul>
+	{/if}
 </section>
 
 <section class="card">
