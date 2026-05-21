@@ -103,6 +103,7 @@ main {
     display: grid;
     gap: 0.75rem;
     box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+    overflow-wrap: break-word;
 }
 
 form {
