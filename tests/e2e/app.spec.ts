@@ -43,7 +43,9 @@ test('register, create party, invite guests, and RSVP', async ({ page }) => {
 	const testRunTimestamp = Date.now();
 	const email = `e2e-user-${testRunTimestamp}@example.com`;
 	const password = 'password1234';
-	const partyName = `E2E Party ${testRunTimestamp}`;
+	const partyName = `Hannah & Miguel's Backyard BBQ (${testRunTimestamp})`;
+	const partyDescription =
+		"Saturday at 5:30 PM in our backyard — tacos, drinks, and lawn games. Bring a folding chair if you have one.";
 
 	await page.goto('/');
 	await page.getByRole('link', { name: /create an account/i }).click();
@@ -54,16 +56,19 @@ test('register, create party, invite guests, and RSVP', async ({ page }) => {
 
 	await expect(page).toHaveURL(/\/dashboard$/);
 	await expect(page.getByRole('heading', { name: 'Your parties' })).toBeVisible();
-	await updateReadmeScreenshot(page, 'dashboard.png');
 
 	await page.getByRole('link', { name: 'Create new party' }).click();
 	await page.getByLabel('Party name').fill(partyName);
-	await page.getByLabel('Description').fill('This event is created by the e2e suite.');
+	await page.getByLabel('Description').fill(partyDescription);
 	await page.getByRole('button', { name: 'Create party' }).click();
 
 	await expect(page).toHaveURL(/\/party\/.+$/);
 	const partyUrl = page.url();
 	await expect(page.getByRole('heading', { name: partyName })).toBeVisible();
+	await page.goto('/dashboard');
+	await expect(page.getByRole('heading', { name: partyName })).toBeVisible();
+	await updateReadmeScreenshot(page, 'dashboard.png');
+	await page.goto(partyUrl);
 
 	const createInviteButton = page.getByRole('button', { name: 'Create invite' });
 	const additionalInviteCount = inviteGroups.length - 1;
