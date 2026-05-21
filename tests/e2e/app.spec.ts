@@ -49,7 +49,7 @@ test("register, create party, invite guests, and RSVP", async ({ page }) => {
   const password = "password1234";
   const partyName = `Hannah & Miguel's Backyard BBQ`;
   const partyDescription =
-    "Saturday at 5:30 PM in our backyard — tacos, drinks, and lawn games. Bring a folding chair if you have one.";
+    '![Barbeque](/barbeque.jpg)\n\nSaturday at 5:30 PM in our backyard — tacos, drinks, and lawn games. Bring a folding chair if you have one.';
 
   await page.goto("/");
   await page.getByRole("link", { name: /create an account/i }).click();

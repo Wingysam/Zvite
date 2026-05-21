@@ -21,7 +21,8 @@ export default defineConfig({
 		command: `node ./tests/e2e/cleanup-db.mjs "${dbPath}" && bun run dev -- --host 127.0.0.1 --port 4173`,
 		env: {
 			...process.env,
-			DB_PATH: dbPath
+			DB_PATH: dbPath,
+			E2E_STATIC_PATH: 'tests/e2e/static'
 		},
 		url: 'http://127.0.0.1:4173',
 		reuseExistingServer: false,
