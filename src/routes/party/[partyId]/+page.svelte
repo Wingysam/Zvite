@@ -68,7 +68,7 @@
 		NoResponse: { label: 'Pending', color: 'no-response' }
 	};
 
-	const relativeTimeFormat = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
+	const relativeTimeFormatter = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
 
 	function formatTimeAgo(timestamp: number): string {
 		const elapsedSeconds = Math.round(Date.now() / 1000 - timestamp);
@@ -76,21 +76,21 @@
 		const pastOffset = -elapsedSeconds;
 
 		if (absSeconds >= 60 * 60 * 24 * 365) {
-			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60 * 24 * 365)), 'year');
+			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60 * 24 * 365)), 'year');
 		}
 		if (absSeconds >= 60 * 60 * 24 * 30) {
-			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60 * 24 * 30)), 'month');
+			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60 * 24 * 30)), 'month');
 		}
 		if (absSeconds >= 60 * 60 * 24) {
-			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60 * 24)), 'day');
+			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60 * 24)), 'day');
 		}
 		if (absSeconds >= 60 * 60) {
-			return relativeTimeFormat.format(Math.round(pastOffset / (60 * 60)), 'hour');
+			return relativeTimeFormatter.format(Math.round(pastOffset / (60 * 60)), 'hour');
 		}
 		if (absSeconds >= 60) {
-			return relativeTimeFormat.format(Math.round(pastOffset / 60), 'minute');
+			return relativeTimeFormatter.format(Math.round(pastOffset / 60), 'minute');
 		}
-		return relativeTimeFormat.format(pastOffset, 'second');
+		return relativeTimeFormatter.format(pastOffset, 'second');
 	}
 </script>
 
