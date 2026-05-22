@@ -360,3 +360,65 @@ test("cannot create party for a group they are not a member of", async ({
   await page.getByRole("button", { name: "Create party" }).click();
   await expect(page).toHaveURL(/\/party\/.+$/);
 });
+
+test("delete a party from the party admin page", async ({ page }) => {
+  const testRunTimestamp = Date.now();
+  const email = `delete-party-user-${testRunTimestamp}@example.com`;
+  const password = "password1234";
+  const partyName = "Party to Delete";
+
+  // Register
+  await page.goto("/register");
+  await page.getByLabel("Password").fill(password);
+  await page.getByLabel("Email").fill(email);
+  await page.getByRole("button", { name: "Register" }).click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+
+  // Create a party
+  await page.getByRole("link", { name: "Create new party" }).click();
+  await page.getByLabel("Party name").fill(partyName);
+  await page.getByRole("button", { name: "Create party" }).click();
+  await expect(page).toHaveURL(/\/party\/.+$/);
+  await expect(page.getByRole("heading", { name: partyName })).toBeVisible();
+
+  // Verify the delete party section is visible and button is disabled
+  await expect(
+    page.getByRole("heading", { name: "Delete party" }),
+  ).toBeVisible();
+  const deleteButton = page.getByRole("button", { name: "Delete party" });
+  await expect(deleteButton).toBeDisabled();
+
+  // Submit with a wrong name by bypassing the disabled button
+  // to test server-side validation
+  await page.evaluate(() => {
+    const input = document.querySelector(
+      'input[name="confirmName"]',
+    ) as HTMLInputElement | null;
+    if (input) {
+      input.value = "Wrong Name";
+      input.form?.requestSubmit();
+    }
+  });
+  await expect(
+    page
+      .locator("section.card")
+      .filter({ has: page.getByRole("heading", { name: "Delete party" }) })
+      .getByText(
+        "Party name does not match. Type the exact party name to confirm deletion.",
+      ),
+  ).toBeVisible();
+
+  // Type the correct name — button should become enabled
+  await page.getByLabel(/Type.*to confirm deletion/).fill(partyName);
+  await expect(deleteButton).toBeEnabled();
+
+  // Click delete — should redirect to dashboard
+  await deleteButton.click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+
+  // Verify the party is no longer listed on the dashboard
+  await expect(
+    page.getByRole("heading", { name: "Your parties" }),
+  ).toBeVisible();
+  await expect(page.getByText(partyName)).toHaveCount(0);
+});

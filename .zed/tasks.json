@@ -4,6 +4,6 @@
     "command": "bun install",
     "hooks": ["create_worktree"],
     "reveal": "no_focus",
-    "hide": "on_success",
-  },
+    "hide": "on_success"
+  }
 ]
