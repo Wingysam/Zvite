@@ -1,6 +1,12 @@
 # Zvite
 
-A minimal event RSVP manager built with SvelteKit and SQLite. Create events, share invite links, and track guest responses in one place.
+After looking at the existing RSVP apps and websites, I didn't like any of them:
+
+* Evite: filled with ads, tracking, requires guests to sign up for evite
+* Partiful: requires guests to sign up for partiful
+* Apple Invites: requires guests to enter their names and pick a color for whatever reason
+* Luma: requires emails for guests; I want to send the links to my friends myself
+* Gathio: too much branding, requires an explicit end time, too many unnecessary features cluttering the RSVP UI
 
 ![Dashboard](screenshots/dashboard.png)
 
