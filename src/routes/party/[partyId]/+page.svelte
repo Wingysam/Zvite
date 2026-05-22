@@ -168,8 +168,7 @@
   <h2>Response metrics</h2>
   <p>
     Yes: {data.counts.Yes} | Maybe: {data.counts.Maybe} | No: {data.counts.No} | No
-    response:
-    {data.counts.NoResponse}
+    response: {data.counts.NoResponse}
   </p>
 </section>
 
