@@ -133,7 +133,7 @@ test("register, create party, invite guests, and RSVP", async ({ page }) => {
   await page.goto(partyUrl);
   await expect(
     page.getByText(
-      /Yes:\s*2\s*\|\s*Maybe:\s*1\s*\|\s*No:\s*1\s*\|\s*No response:\s*6/,
+      /Yes:\s*2\s*\|\s*Maybe:\s*1\s*\|\s*No:\s*1\s*\|\s*No\s+response:\s*6/,
     ),
   ).toBeVisible();
 

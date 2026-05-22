@@ -143,7 +143,7 @@ test.describe("database migration", () => {
     // === Step 5: Verify response counts are correct ===
     await expect(
       page.getByText(
-        /Yes:\s*1\s*\|\s*Maybe:\s*1\s*\|\s*No:\s*0\s*\|\s*No response:\s*1/,
+        /Yes:\s*1\s*\|\s*Maybe:\s*1\s*\|\s*No:\s*0\s*\|\s*No\s+response:\s*1/,
       ),
     ).toBeVisible();
 
