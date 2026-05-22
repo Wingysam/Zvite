@@ -6,6 +6,7 @@ import {
   listPartiesForUser,
   updateUserPassword,
 } from "$lib/server/queries";
+import { renderMarkdownSafe } from "$lib/server/markdown";
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 
@@ -14,8 +15,15 @@ export const load: PageServerLoad = ({ locals }) => {
     throw redirect(303, "/login");
   }
 
+  const parties = listPartiesForUser(locals.user.id).map((party) => ({
+    ...party,
+    descriptionExcerpt: party.description
+      ? truncateText(stripHtml(renderMarkdownSafe(party.description)), 2)
+      : null,
+  }));
+
   return {
-    parties: listPartiesForUser(locals.user.id),
+    parties,
     organizations: listOrganizationsForUser(locals.user.id),
   };
 };
@@ -70,3 +78,28 @@ export const actions: Actions = {
     return { success: true, message: "Password updated successfully." };
   },
 };
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "");
+}
+
+function truncateText(text: string, maxSentences: number): string {
+  const sentenceEndings = text.match(/[^.!?]*[.!?]+/g);
+  if (!sentenceEndings) {
+    // No sentence endings found, truncate by character count
+    const maxChars = 200;
+    if (text.length <= maxChars) return text;
+    return text.slice(0, maxChars).trimEnd() + "...";
+  }
+
+  const truncated = sentenceEndings
+    .slice(0, maxSentences)
+    .map((s) => s.trim())
+    .join(" ");
+
+  if (sentenceEndings.length > maxSentences || truncated.length > 200) {
+    return truncated.slice(0, 200).trimEnd() + "...";
+  }
+
+  return truncated;
+}

@@ -22,8 +22,8 @@
     {#each data.parties as party}
       <article class="card">
         <h2>{party.name}</h2>
-        {#if party.description}
-          <p>{party.description}</p>
+        {#if party.descriptionExcerpt}
+          <p>{party.descriptionExcerpt}</p>
         {/if}
         <p><a href={`/party/${party.id}`}>Manage party</a></p>
       </article>
