@@ -128,6 +128,11 @@ test("register, create party, invite guests, and RSVP", async ({ page }) => {
     });
     await responseButton.click();
     await expect(responseButton).toHaveClass(/active/);
+    // Ensure each RSVP lands in a distinct second so that the ordering of
+    // recent responses on the party page (most recent first) is deterministic
+    // across test runs. Without this, responses that fall in the same second
+    // would be tied on responded_at, making the order non-deterministic.
+    await page.waitForTimeout(1000);
   }
 
   await page.goto(partyUrl);

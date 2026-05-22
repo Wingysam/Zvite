@@ -256,7 +256,7 @@ const listRecentResponsesForOwnedPartyStmt = db.prepare(`
 	  	  	OR (po.owner_type = 'Organization' AND om.user_id = ?)
 	  	  )
 	  )
-	ORDER BY im.responded_at DESC
+	ORDER BY im.responded_at DESC, im.name ASC
 	LIMIT ?
 `);
 
