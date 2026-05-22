@@ -181,6 +181,14 @@ button.loading {
   cursor: wait;
 }
 
+button.btn-danger {
+  background: #dc2626;
+}
+
+button.btn-danger:hover {
+  background: #b91c1c;
+}
+
 .button-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

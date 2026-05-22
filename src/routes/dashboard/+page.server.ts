@@ -1,6 +1,8 @@
 import { hashPassword, verifyPassword } from "$lib/server/auth";
 import {
+  createOrganization,
   getUserById,
+  listOrganizationsForUser,
   listPartiesForUser,
   updateUserPassword,
 } from "$lib/server/queries";
@@ -14,10 +16,26 @@ export const load: PageServerLoad = ({ locals }) => {
 
   return {
     parties: listPartiesForUser(locals.user.id),
+    organizations: listOrganizationsForUser(locals.user.id),
   };
 };
 
 export const actions: Actions = {
+  createGroup: async ({ locals, request }) => {
+    if (!locals.user) {
+      throw redirect(303, "/login");
+    }
+
+    const data = Object.fromEntries(await request.formData());
+    const name = String(data.name ?? "").trim();
+
+    if (!name) {
+      return fail(400, { error: "Group name is required." });
+    }
+
+    const org = createOrganization(name, locals.user.id);
+    throw redirect(303, `/organization/${org.id}`);
+  },
   changePassword: async ({ locals, request }) => {
     if (!locals.user) {
       throw redirect(303, "/login");

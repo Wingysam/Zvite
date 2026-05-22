@@ -24,7 +24,6 @@ export const actions: Actions = {
     const data = Object.fromEntries(await request.formData());
     const name = String(data.name ?? "").trim();
     const descriptionInput = String(data.description ?? "").trim();
-    const ownerType = String(data.ownerType ?? "User");
     const ownerId = String(data.ownerId ?? "");
 
     if (!name) {
@@ -34,10 +33,10 @@ export const actions: Actions = {
     let resolvedOwnerId = locals.user.id;
     let resolvedOwnerType: "User" | "Organization" = "User";
 
-    if (ownerType === "Organization") {
+    if (ownerId) {
       const organizations = listOrganizationsForUser(locals.user.id);
-      const isMember = organizations.some((org) => org.id === ownerId);
-      if (!isMember) {
+      const org = organizations.find((o) => o.id === ownerId);
+      if (!org) {
         return fail(400, { error: "Invalid organization selection." });
       }
       resolvedOwnerId = ownerId;

@@ -23,18 +23,11 @@
       <textarea name="description" rows="3"></textarea>
     </label>
     <label>
-      Owner type
-      <select name="ownerType">
-        <option value="User">Myself</option>
-        <option value="Organization">Organization</option>
-      </select>
-    </label>
-    <label>
       Owner
       <select name="ownerId">
         <option value="">Myself</option>
         {#each data.organizations as org}
-          <option value={org.id}>Organization: {org.name}</option>
+          <option value={org.id}>{org.name}</option>
         {/each}
       </select>
     </label>
