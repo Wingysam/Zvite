@@ -5,10 +5,6 @@ const db = new Database(dbPath);
 
 db.run("PRAGMA foreign_keys = ON;");
 
-type TableInfoRow = {
-  name: string;
-};
-
 type Migration = {
   toVersion: number;
   up: () => void;
@@ -27,13 +23,6 @@ function tableExists(tableName: string): boolean {
   return row !== null;
 }
 
-function hasColumn(tableName: string, columnName: string): boolean {
-  const tableInfo = db
-    .prepare(`PRAGMA table_info(${tableName})`)
-    .all() as TableInfoRow[];
-  return tableInfo.some((column) => column.name === columnName);
-}
-
 function ensureMetadataTable(): void {
   db.run(`
 		CREATE TABLE IF NOT EXISTS metadata (
@@ -50,7 +39,6 @@ function getCurrentDatabaseVersion(): number {
   if (!tableExists("metadata")) {
     return 0;
   }
-  ensureMetadataTable();
   const row = db
     .prepare("SELECT database_version FROM metadata WHERE id = 1 LIMIT 1")
     .get() as DatabaseVersionRow | null;
@@ -58,7 +46,6 @@ function getCurrentDatabaseVersion(): number {
 }
 
 function setCurrentDatabaseVersion(version: number): void {
-  ensureMetadataTable();
   db.run("UPDATE metadata SET database_version = ? WHERE id = 1;", [version]);
 }
 
@@ -128,26 +115,16 @@ const migrations: Migration[] = [
 					invite_id TEXT NOT NULL,
 					name TEXT NOT NULL,
 					status TEXT CHECK(status IN ('Yes', 'Maybe', 'No', 'NoResponse')) DEFAULT 'NoResponse',
-					responded_at INTEGER,
 					FOREIGN KEY (invite_id) REFERENCES invites(id) ON DELETE CASCADE
 				);
 			`);
 
-      if (!hasColumn("invites", "name")) {
-        db.run(
-          "ALTER TABLE invites ADD COLUMN name TEXT NOT NULL DEFAULT 'General Invite';",
-        );
-      }
-
-      if (!hasColumn("invites", "allow_self_add_names")) {
-        db.run(
-          "ALTER TABLE invites ADD COLUMN allow_self_add_names INTEGER NOT NULL DEFAULT 0;",
-        );
-      }
-
-      if (!hasColumn("invite_members", "responded_at")) {
-        db.run("ALTER TABLE invite_members ADD COLUMN responded_at INTEGER;");
-      }
+      // responded_at is added separately because pre-migration databases
+      // (commit 1fe9eb1) already have the tables above but are missing this
+      // column. The IF NOT EXISTS on the CREATE TABLEs no-ops for those
+      // databases, and this ALTER TABLE adds the missing column. For fresh
+      // databases, the table was just created without it, so this also works.
+      db.run("ALTER TABLE invite_members ADD COLUMN responded_at INTEGER;");
     },
   },
 ];
