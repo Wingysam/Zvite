@@ -223,6 +223,7 @@ const updateInviteSelfAddNamesStmt = db.prepare(
   "UPDATE invites SET allow_self_add_names = ? WHERE id = ?",
 );
 const deleteInviteStmt = db.prepare("DELETE FROM invites WHERE id = ?");
+const deletePartyStmt = db.prepare("DELETE FROM parties WHERE id = ?");
 
 const listInviteMembersByInviteIdStmt = db.prepare(`
 	SELECT id, invite_id, name, status, responded_at
@@ -648,6 +649,16 @@ export function removeOwnedInvite(
   }
 
   const result = deleteInviteStmt.run(invite.id);
+  return result.changes > 0;
+}
+
+export function deleteOwnedParty(partyId: string, userId: string): boolean {
+  const party = getOwnedPartyById(partyId, userId);
+  if (!party) {
+    return false;
+  }
+
+  const result = deletePartyStmt.run(party.id);
   return result.changes > 0;
 }
 

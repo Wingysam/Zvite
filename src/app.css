@@ -521,3 +521,20 @@ button.btn-danger:hover {
   display: grid;
   gap: 0.4rem;
 }
+
+.delete-party-section {
+  border-color: #fecaca;
+}
+
+.btn-danger {
+  background: #dc2626;
+}
+
+.btn-danger:disabled {
+  background: #fca5a5;
+  cursor: not-allowed;
+}
+
+.btn-danger:not(:disabled):hover {
+  background: #b91c1c;
+}

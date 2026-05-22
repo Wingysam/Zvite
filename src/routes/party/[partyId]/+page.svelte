@@ -6,6 +6,7 @@
   let { data, form } = $props<{ data: PageData; form: ActionData }>();
 
   let allowSelfAddNames = $state(false);
+  let confirmDeleteName = $state("");
 
   $effect(() => {
     allowSelfAddNames = Boolean(data.defaultAllowSelfAddNames);
@@ -371,4 +372,24 @@
       <button type="submit">Create invite</button>
     </form>
   </div>
+</section>
+
+<section class="card delete-party-section">
+  <h2>Delete party</h2>
+  {#if form?.error}
+    <p class="error">{form.error}</p>
+  {/if}
+  <form method="POST" action="?/deleteParty" use:enhance>
+    <label>
+      Type <strong>{data.party.name}</strong> to confirm deletion:
+      <input name="confirmName" required bind:value={confirmDeleteName} />
+    </label>
+    <button
+      type="submit"
+      disabled={confirmDeleteName !== data.party.name}
+      class="btn-danger"
+    >
+      Delete party
+    </button>
+  </form>
 </section>

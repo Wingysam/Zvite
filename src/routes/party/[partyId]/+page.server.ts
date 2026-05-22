@@ -1,6 +1,7 @@
 import {
   addInviteMember,
   createInviteForOwnedParty,
+  deleteOwnedParty,
   getLatestInviteForOwnedParty,
   getOwnedInviteById,
   getOwnedPartyById,
@@ -242,5 +243,32 @@ export const actions: Actions = {
 
     removeInviteMember(invite.id, memberId);
     return { success: true };
+  },
+  deleteParty: async ({ locals, params, request }) => {
+    if (!locals.user) {
+      throw redirect(303, "/login");
+    }
+
+    const party = getOwnedPartyById(params.partyId, locals.user.id);
+    if (!party) {
+      throw error(404, "Party not found");
+    }
+
+    const data = Object.fromEntries(await request.formData());
+    const confirmName = String(data.confirmName ?? "").trim();
+
+    if (confirmName !== party.name) {
+      return fail(400, {
+        error:
+          "Party name does not match. Type the exact party name to confirm deletion.",
+      });
+    }
+
+    const deleted = deleteOwnedParty(party.id, locals.user.id);
+    if (!deleted) {
+      return fail(400, { error: "Unable to delete party." });
+    }
+
+    throw redirect(303, "/dashboard");
   },
 };
