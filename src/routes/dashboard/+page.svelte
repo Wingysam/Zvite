@@ -22,8 +22,8 @@
     {#each data.parties as party}
       <article class="card">
         <h2>{party.name}</h2>
-        {#if party.description}
-          <p>{party.description}</p>
+        {#if party.descriptionExcerpt}
+          <p>{party.descriptionExcerpt}</p>
         {/if}
         <p><a href={`/party/${party.id}`}>Manage party</a></p>
       </article>
@@ -32,8 +32,35 @@
 </section>
 
 <section class="card">
+  <h2>Your groups</h2>
+
+  {#if data.organizations.length === 0}
+    <p class="muted">You are not a member of any groups yet.</p>
+  {:else}
+    {#each data.organizations as org}
+      <article class="card">
+        <h2>{org.name}</h2>
+        <p><a href={`/organization/${org.id}`}>Manage group</a></p>
+      </article>
+    {/each}
+  {/if}
+
+  <h3>Create a new group</h3>
+  {#if form?.error === "Group name is required."}
+    <p class="error">{form.error}</p>
+  {/if}
+  <form method="POST" action="?/createGroup" use:enhance>
+    <label>
+      Group name
+      <input name="name" required placeholder="e.g., Smith Family" />
+    </label>
+    <button type="submit">Create group</button>
+  </form>
+</section>
+
+<section class="card">
   <h2>Change password</h2>
-  {#if form?.error}
+  {#if form?.error && form.error !== "Group name is required."}
     <p class="error">{form.error}</p>
   {:else if form?.message}
     <p style="color: #16a34a; font-weight: 600;">{form.message}</p>

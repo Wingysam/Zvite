@@ -53,6 +53,31 @@ export interface RecentResponseRecord {
 const alphabet =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+const insertOrganizationStmt = db.prepare(
+  "INSERT INTO organizations (id, name) VALUES (?, ?)",
+);
+const insertOrganizationMemberStmt = db.prepare(
+  "INSERT INTO organization_members (organization_id, user_id) VALUES (?, ?)",
+);
+const deleteOrganizationMemberStmt = db.prepare(
+  "DELETE FROM organization_members WHERE organization_id = ? AND user_id = ?",
+);
+const listOrganizationMembersStmt = db.prepare(`
+	SELECT u.id, u.email
+	FROM users u
+	JOIN organization_members om ON om.user_id = u.id
+	WHERE om.organization_id = ?
+	ORDER BY u.email
+`);
+const getOrganizationByIdStmt = db.prepare(
+  "SELECT id, name FROM organizations WHERE id = ?",
+);
+const isOrganizationMemberStmt = db.prepare(`
+	SELECT 1 FROM organization_members
+	WHERE organization_id = ? AND user_id = ?
+	LIMIT 1
+`);
+
 const insertUserStmt = db.prepare(
   "INSERT INTO users (id, email, password_hash) VALUES (?, ?, ?)",
 );
@@ -82,7 +107,7 @@ const listPartiesForUserStmt = db.prepare(`
 		ON po.owner_type = 'Organization' AND po.owner_id = om.organization_id
 	WHERE (po.owner_type = 'User' AND po.owner_id = ?)
 	   OR (po.owner_type = 'Organization' AND om.user_id = ?)
-	ORDER BY p.name
+	ORDER BY p.rowid DESC
 `);
 
 const getOwnedPartyByIdStmt = db.prepare(`
@@ -667,4 +692,56 @@ export function updateUserPassword(
 ): boolean {
   const result = updateUserPasswordStmt.run(passwordHash, userId);
   return result.changes > 0;
+}
+
+export function createOrganization(
+  name: string,
+  creatorUserId: string,
+): OrganizationRecord {
+  const org: OrganizationRecord = {
+    id: createId(),
+    name,
+  };
+
+  const createOrg = db.transaction(() => {
+    insertOrganizationStmt.run(org.id, org.name);
+    insertOrganizationMemberStmt.run(org.id, creatorUserId);
+  });
+
+  createOrg();
+  return org;
+}
+
+export function getOrganizationById(orgId: string): OrganizationRecord | null {
+  return (
+    (getOrganizationByIdStmt.get(orgId) as OrganizationRecord | null) ?? null
+  );
+}
+
+export function listOrganizationMembers(orgId: string): UserRecord[] {
+  return listOrganizationMembersStmt.all(orgId) as UserRecord[];
+}
+
+export function addOrganizationMember(orgId: string, userId: string): boolean {
+  try {
+    insertOrganizationMemberStmt.run(orgId, userId);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function removeOrganizationMember(
+  orgId: string,
+  userId: string,
+): boolean {
+  const result = deleteOrganizationMemberStmt.run(orgId, userId);
+  return result.changes > 0;
+}
+
+export function isOrganizationMember(orgId: string, userId: string): boolean {
+  const row = isOrganizationMemberStmt.get(orgId, userId) as {
+    1: number;
+  } | null;
+  return row !== null;
 }
