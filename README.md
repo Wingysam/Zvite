@@ -8,6 +8,8 @@ After looking at the existing RSVP apps and websites, I didn't like any of them:
 * Luma: requires emails for guests; I want to send the links to my friends myself
 * Gathio: too much branding, requires an explicit end time, too many unnecessary features cluttering the RSVP UI
 
+So I made my own that does exactly what I wanted for my party, and doesn't do anything I don't want.
+
 ![Dashboard](screenshots/dashboard.png)
 
 ![Party control page](screenshots/party.png)
