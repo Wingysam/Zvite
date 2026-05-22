@@ -107,7 +107,7 @@ const listPartiesForUserStmt = db.prepare(`
 		ON po.owner_type = 'Organization' AND po.owner_id = om.organization_id
 	WHERE (po.owner_type = 'User' AND po.owner_id = ?)
 	   OR (po.owner_type = 'Organization' AND om.user_id = ?)
-	ORDER BY p.name
+	ORDER BY p.rowid DESC
 `);
 
 const getOwnedPartyByIdStmt = db.prepare(`
